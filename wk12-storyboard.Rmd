@@ -1,0 +1,208 @@
+---
+title: "Russian Troll Tweets"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: united
+    smooth_scroll: true
+    storyboard: true
+
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(inspectdf)
+library(skimr)
+library(ggthemes)
+#install.packages("usethis")
+library(usethis)
+# create www folder
+fs::dir_create("www/")
+# options for chunks
+knitr::opts_chunk$set(
+  cache = FALSE,
+  echo = TRUE,
+  collapse = FALSE,
+  eval = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  dev = "ragg_png",
+  out.width = '85%',
+  fig.path = "www/",
+  dpi = 320,
+  fig.align = "center",
+  fig.width = 7,
+  fig.height = 5.5,
+  fig.retina = 2
+  )
+# tibble printing
+options(
+  scipen = 99999,
+  pillar.print_max = 10, 
+  pillar.print_min = 10)
+options(repos = "https://cloud.r-project.org")
+
+```
+
+
+
+
+
+
+Background {.storyboard}
+===========================================================
+
+### Info {data-commentary-width=350}
+
+
+
+Original paper on Russian Troll Tweets:
+
+*Why We’re Sharing 3 Million Russian Troll Tweets*
+Oliver Roeder. [PloS ONE](https://fivethirtyeight.com/features/why-were-sharing-3-million-russian-troll-tweets/)
+
+
+
+
+*** 
+
+Additional links or sources... 
+
+*Troll Factories: The Internet Research Agency and State-Sponsored Agenda Building*
+Darren L. Linvill. (http://pwarren.people.clemson.edu/Linvill_Warren_TrollFactory.pdf)
+*
+
+### Packages {data-commentary-width=350}
+
+
+The Russian Troll Tweets data set comes from the ['fivethirtyeight' github repo](https://github.com/fivethirtyeight/russian-troll-tweets.git). You can install it by using the code below:
+
+
+```{r install_russiantrolltweets, eval=FALSE}
+install.packages("fivethirtyeight")
+# or
+# install.packages("remotes")
+remotes::install_github("fivethirtyeight")
+
+```
+
+
+
+Code for obtaining data...
+
+```{r}
+```
+
+*** 
+
+Information about the dataset...
+
+
+
+Import {.storyboard}
+===========================================================
+
+### Import {data-commentary-width=300}
+
+The complete data set contains three million tweets. For the sake of storage we pulled 1,000 tweets from three different sub sets of data to work with. 
+
+```{r import-tweet-6, echo=FALSE}
+
+tweet_6_raw <- readr::read_csv(file = "https://raw.githubusercontent.com/fivethirtyeight/russian-troll-tweets/master/IRAhandle_tweets_6.csv", n_max = 1000)
+```
+
+```{r glimpsetweet6raw}
+glimpse(tweet_6_raw)
+```
+
+```{r import-tweet-1, echo=FALSE}
+tweet_1_raw <- readr::read_csv(file = "https://raw.githubusercontent.com/fivethirtyeight/russian-troll-tweets/master/IRAhandle_tweets_1.csv", n_max = 1000)
+```
+
+```{r glimpsetweet1raw}
+glimpse(tweet_1_raw)
+```
+
+
+
+```{r import-tweet-9, echo=FALSE}
+tweet_9_raw <- readr::read_csv(file = "https://raw.githubusercontent.com/fivethirtyeight/russian-troll-tweets/master/IRAhandle_tweets_9.csv", n_max = 1000)
+```
+
+
+```{r glimpsetweet9raw}
+glimpse(tweet_9_raw)
+```
+
+
+
+
+### Skim {data-commentary-width=400}
+
+```{r echo=FALSE}
+skimr::skim(tweet_1_raw) |> 
+  tibble::as_tibble()
+
+```
+
+```{r echo=FALSE}
+skimr::skim(tweet_6_raw) |> 
+  tibble::as_tibble()
+
+```
+
+```{r echo=FALSE}
+skimr::skim(tweet_9_raw) |> 
+  tibble::as_tibble()
+
+```
+
+Visualize {.storyboard}
+===========================================================
+
+### Numeric {data-commentary-width=400}
+
+Code for creating graphs...
+
+```{r inspect_num,echo=FALSE}
+tweet_6_raw %>% 
+  select(-contains("_id")) %>% 
+inspect_num(df1 = . ) %>%
+  show_plot(text_labels= TRUE) +
+  ggthemes::theme_fivethirtyeight(base_size = 8)
+```
+
+
+### Types {data-commentary-width=400}
+
+```{r inspect_types,echo=FALSE}
+
+inspect_types(df1 = tweet_6_raw) %>% 
+  show_plot(text_labels= TRUE, plot_type=3) +
+  ggthemes::theme_wsj(base_size = 8)
+
+```
+
+
+### Character {data-commentary-width=400}
+
+
+```{r inspect_cat,echo=FALSE}
+#names(tweet_6_raw)
+tweet_6_raw %>% 
+  select(-article_url, -content, -harvested_date, -publish_date, -starts_with("tco")) %>% 
+inspect_cat(df1 = .) %>%
+  show_plot(text_labels= TRUE)
+ggthemes::theme_solarized(base_size=8)
+```
+
+
+***
+
+
+
+
+
+
+### Future Work
+
+
