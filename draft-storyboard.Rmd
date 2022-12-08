@@ -87,10 +87,7 @@ remotes::install_github("fivethirtyeight")
 
 
 
-Code for obtaining data...
 
-```{r}
-```
 
 *** 
 
